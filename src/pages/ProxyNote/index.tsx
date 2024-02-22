@@ -20,7 +20,7 @@ const createExpensiveFunction = () => {
   const cache = new Map();
 
   const handler: ProxyHandler<(value: IItem) => number> = {
-    apply(target, thisArg: unknown, argumentsList: IItem[]) {
+    apply(target, _: unknown, argumentsList: IItem[]) {
       const arg = argumentsList[0];
 
       if (!cache.has(arg)) {

@@ -2,7 +2,7 @@ import { useState } from "react";
 import reactLogo from "./assets/react.svg";
 import viteLogo from "/vite.svg";
 import "./App.css";
-import ProxyNote from "./pages/proxy-note";
+import { ProxyNote } from "@/pages";
 
 function App() {
   const [count, setCount] = useState(0);
