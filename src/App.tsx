@@ -2,7 +2,8 @@ import { useState } from "react";
 import reactLogo from "./assets/react.svg";
 import viteLogo from "/vite.svg";
 import "./App.css";
-import { EditTodoList, ProxyNote, TodoList } from "@/pages";
+import { EditTodoList, ProxyNote, State, TodoList } from "@/pages";
+import PropsStateExample from "./pages/PropsStateExample";
 
 function App() {
   const [count, setCount] = useState(0);
@@ -29,6 +30,8 @@ function App() {
       <p className="read-the-docs">
         Click on the Vite and React logos to learn more
       </p>
+      <State />
+      <PropsStateExample />
       <ProxyNote />
       <TodoList />
       <EditTodoList />
