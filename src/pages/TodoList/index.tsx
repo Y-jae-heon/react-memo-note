@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import React, { useRef, useState } from "react";
 import { Todos } from "@/components";
 
 function TodoList() {
@@ -9,34 +9,35 @@ function TodoList() {
     }[]
   >([]);
 
-  const [title, setTitle] = useState<string>("");
-  const [content, setContent] = useState<string>("");
+  const titleRef = useRef<HTMLInputElement>(null);
+  const contentRef = useRef<HTMLInputElement>(null);
 
-  const handleAddTodo = useCallback(() => {
-    setTodos((prev) => [
-      ...prev,
-      {
-        title,
-        content,
-      },
-    ]);
-    setTitle("");
-    setContent("");
-  }, [title, content]);
+  const handleAddTodo = () => {
+    if (titleRef.current && contentRef.current) {
+      setTodos((prev) => {
+        if (titleRef.current && contentRef.current) {
+          const title = titleRef.current.value;
+          const content = contentRef.current.value;
+          titleRef.current.value = "";
+          contentRef.current.value = "";
+          return [
+            ...prev,
+            {
+              title,
+              content,
+            },
+          ];
+        }
+        return [...prev];
+      });
+    }
+  };
 
   return (
     <div>
       <Todos todos={todos} onAdd={handleAddTodo} />
-      <input
-        value={title}
-        onChange={(evt) => setTitle(evt.target.value)}
-        placeholder="제목"
-      />
-      <input
-        value={content}
-        onChange={(evt) => setContent(evt.target.value)}
-        placeholder="내용"
-      />
+      <input ref={titleRef} placeholder="제목" />
+      <input ref={contentRef} placeholder="내용" />
     </div>
   );
 }
