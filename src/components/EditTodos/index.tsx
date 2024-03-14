@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef } from "react";
 
 interface Props {
   todos: {
@@ -23,24 +23,21 @@ const EditTodos: React.FunctionComponent<Props> = function EditTodos({
   onEditContent,
   onEdit,
 }) {
-  const handleEditTodoContent = (
-    type: "title" | "content",
-    value: string,
-    index: number
-  ) => {
-    if (type === "title") {
-      console.log({
-        title: value,
-        content: todos[index].content,
-        index,
-      });
-      onEditContent?.({ title: value, content: todos[index].content, index });
-    } else if (type === "content") {
-      onEditContent?.({ title: todos[index].title, content: value, index });
-    }
-  };
+  const todoTitleRef = useRef<HTMLInputElement[]>([]);
+  const todoContentRef = useRef<HTMLInputElement[]>([]);
 
   const handleEdit = (index: number) => {
+    console.log(todoTitleRef.current[index].value, "<<<<<");
+    console.log(todoContentRef, "<<<<<");
+    onEditContent?.({
+      title: todoTitleRef.current[index].value,
+      content: todoContentRef.current[index].value,
+      index,
+    });
+    onEdit?.({ index });
+  };
+
+  const handleEditStart = (index: number) => {
     onEdit?.({ index });
   };
 
@@ -56,16 +53,26 @@ const EditTodos: React.FunctionComponent<Props> = function EditTodos({
       return (
         <div key={index}>
           <input
-            onChange={(evt) =>
-              handleEditTodoContent("title", evt.target.value, index)
-            }
-            value={todo.title}
+            ref={(ref) => {
+              if (ref && !todoTitleRef.current[index])
+                todoTitleRef.current.push(ref);
+              else if (ref) {
+                todoTitleRef.current[index] = ref;
+              }
+            }}
+            id={`todo-title-${index}`}
+            defaultValue={todo.title}
           />
           <input
-            onChange={(evt) =>
-              handleEditTodoContent("content", evt.target.value, index)
-            }
-            value={todo.content}
+            ref={(ref) => {
+              if (ref && !todoContentRef.current[index])
+                todoContentRef.current.push(ref);
+              else if (ref) {
+                todoContentRef.current[index] = ref;
+              }
+            }}
+            id={`todo-content-${index}`}
+            defaultValue={todo.content}
           />
           <button onClick={() => handleEdit(index)}>Edit Complete</button>
         </div>
@@ -75,7 +82,7 @@ const EditTodos: React.FunctionComponent<Props> = function EditTodos({
       <div key={index}>
         <h2>{todo.title}</h2>
         <p>{todo.content}</p>
-        <button onClick={() => handleEdit(index)}>Edit Start</button>
+        <button onClick={() => handleEditStart(index)}>Edit Start</button>
       </div>
     );
   };
